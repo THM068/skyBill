@@ -9,14 +9,20 @@ import spock.lang.Specification
 @TestFor(CustomerController)
 class CustomerControllerSpec extends Specification {
 
+    def customerBillService
+
     def setup() {
+        customerBillService = Mock(CustomerBillService);
+        controller.customerBillService = customerBillService
     }
 
-    def cleanup() {
-    }
 
-    void "test something"() {
-        expect:"fix me"
-            true == false
+    void "A customer/'s bill is returned"() {
+        when:
+            def model = controller.index()
+        then:
+            1 * customerBillService.getCustomerBill() >> new CustomerBillWrapper();
+
+            model.customerBill instanceof CustomerBillWrapper
     }
 }
