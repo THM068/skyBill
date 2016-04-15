@@ -25,4 +25,11 @@ class CustomerControllerSpec extends Specification {
 
             model.customerBill instanceof CustomerBillWrapper
     }
+
+    void "An error message code is returned when index action throws an excetion"() {
+        when:
+            controller.index()
+        then:
+            1 * customerBillService.getCustomerBill() >> { }
+    }
 }
