@@ -1,6 +1,10 @@
 package com.sky
 
+import com.sky.ConnectException
+import com.sky.CustomerBillService
+import com.sky.CustomerBillWrapper
 import grails.test.mixin.TestFor
+import skybill.com.sky.CustomerController
 import spock.lang.Specification
 
 /**
@@ -27,9 +31,14 @@ class CustomerControllerSpec extends Specification {
     }
 
     void "An error message code is returned when index action throws an excetion"() {
+        given:
+            String errorCode = 'resource.not.found'
         when:
-            controller.index()
+            def model = controller.index()
         then:
-            1 * customerBillService.getCustomerBill() >> { }
+            1 * customerBillService.getCustomerBill() >> { throw new ConnectException(errorCode)}
+
+            view == '/customer/error'
+            controller.modelAndView.model.errorCode == errorCode;
     }
 }
