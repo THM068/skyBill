@@ -15,11 +15,22 @@ public class CallChargeWrapper {
     @JsonProperty("calls")
     private List<CallWrapper> calls = new ArrayList<CallWrapper>();
 
+    @JsonProperty("total")
+    private double total;
+
     public List<CallWrapper> getCalls() {
         return calls;
     }
 
     public void setCalls(List<CallWrapper> calls) {
         this.calls = calls;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 }

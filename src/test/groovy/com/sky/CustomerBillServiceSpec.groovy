@@ -60,6 +60,7 @@ class CustomerBillServiceSpec extends Specification {
             subscriptions.get(2).cost  == package_subscription_2.cost
 
             CallChargeWrapper callChargeWrapper = wrapper.getCallCharges();
+            callChargeWrapper.total == call_charge_total
             List<CallWrapper> callCharges = callChargeWrapper.calls
 
             for(CallWrapper callWrapper: callCharges) {
@@ -94,6 +95,7 @@ class CustomerBillServiceSpec extends Specification {
             package_subscription_1 = [type: 'talk', name: 'Sky Talk Anytime', cost: 5]
             package_subscription_2 = [type: 'broadband', name: 'Fibre Unlimited', cost: 16.4]
             call_charge = [called: "07716393769", duration: "00:23:03", cost: 2.13]
+        call_charge_total = 59.64
             rental_title= "50 Shades of Grey"
             rental_cost = 4.99
             skystore_total = 24.97

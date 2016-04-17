@@ -8,11 +8,7 @@ class CustomerController {
 
     def index() {
         CustomerBillWrapper customerBill = customerBillService.getCustomerBill()
-        render(view: 'index', model: [customerBill: customerBill])
-    }
-
-    def test() {
-        render 'vewi ....'
+        [customerBill: customerBill]
     }
 
     def connectException(final ConnectException exception) {

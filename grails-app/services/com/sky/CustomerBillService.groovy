@@ -27,8 +27,6 @@ class CustomerBillService {
         else {
             throw new ConnectException('connection.fail.error');
         }
-
-
     }
 
     public ResponseEntity<CustomerBillWrapper> getCustomerBillResponseEntity() {

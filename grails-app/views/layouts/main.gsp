@@ -13,9 +13,11 @@
     <g:layoutHead/>
 </head>
 <body>
+    <div class="container">
+        <g:layoutBody/>
+        <asset:javascript src="application.js"/>
+    </div>
 
-    <g:layoutBody/>
-    <asset:javascript src="application.js"/>
 
 </body>
 </html>
