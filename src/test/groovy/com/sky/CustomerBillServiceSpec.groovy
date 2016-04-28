@@ -1,9 +1,21 @@
 package com.sky
 
 import grails.test.mixin.TestFor
+import org.apache.commons.io.IOUtils
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.test.web.client.MockRestServiceServer
+import org.springframework.web.client.RestTemplate
+import spock.lang.Ignore
 import spock.lang.Specification
+
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
@@ -12,10 +24,15 @@ import spock.lang.Specification
 class CustomerBillServiceSpec extends Specification {
 
     CustomerBillService customerBillService
+    MockRestServiceServer mockServer
+    final String  url = 'http://safe-plains-5453.herokuapp.com/bill.json'
 
     def setup() {
-        grailsApplication.config.grails.customer.bill.url='http://safe-plains-5453.herokuapp.com/bill.json'
+        RestTemplate restTemplate = new RestTemplate()
+        mockServer = MockRestServiceServer.createServer(restTemplate);
+        grailsApplication.config.grails.customer.bill.url= url
         customerBillService = new CustomerBillService()
+        customerBillService.restTemplate = restTemplate
         customerBillService.grailsApplication = grailsApplication
     }
 
@@ -23,13 +40,22 @@ class CustomerBillServiceSpec extends Specification {
     }
 
     void "getCustomerBillResponseEntity: Check if bill endpoint  works"() {
+        given:
+        mockServer.expect(requestTo(url))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(getJson(), MediaType.APPLICATION_JSON));
         when:
             ResponseEntity<CustomerBillWrapper> response = customerBillService.getCustomerBillResponseEntity()
+            mockServer.verify();
         then:
             response.getStatusCode() == HttpStatus.OK
     }
 
     void "getCustomerBillWrapper:  A customer bill wrapper is returned with correct values"() {
+        given:
+            mockServer.expect(requestTo(url))
+                    .andExpect(method(HttpMethod.GET))
+                    .andRespond(withSuccess(getJson(), MediaType.APPLICATION_JSON));
         when:
             CustomerBillWrapper wrapper = customerBillService.customerBill
         then:
@@ -107,6 +133,9 @@ class CustomerBillServiceSpec extends Specification {
     void "getCustomerBillWrapper:  A connection exception is thrown when endpoint cannot be reached"() {
         given:
             ResponseEntity.metaClass.getStatusCode = { -> HttpStatus.NOT_FOUND }
+        mockServer.expect(requestTo(url)).andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.NOT_FOUND));
+
         when:
             CustomerBillWrapper wrapper = customerBillService.customerBill
         then:
@@ -114,5 +143,9 @@ class CustomerBillServiceSpec extends Specification {
 
     }
 
+    private String getJson() {
+        String result = CustomerBillServiceSpec.class.getClassLoader().getResource('com/sky/customer-bill.json').text
+        return result
+    }
 
 }
