@@ -1,5 +1,6 @@
 package skybill.com.sky
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.sky.ConnectException
 import com.sky.CustomerBillWrapper
 
@@ -8,10 +9,23 @@ class CustomerController {
 
     def index() {
         CustomerBillWrapper customerBill = customerBillService.getCustomerBill()
-        [customerBill: customerBill]
+        String result = toJson(customerBill)
+        //[customerBill: customerBill]
+        render(contentType: 'application/json', text: result )
     }
 
     def connectException(final ConnectException exception) {
          render view: 'error', model: [errorCode: exception.message ]
+    }
+
+    private String toJson(objectTobeSerialized) {
+        String result = ""
+        ObjectMapper mapper = new ObjectMapper()
+
+        if(objectTobeSerialized) {
+            result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectTobeSerialized)
+        }
+
+        return result
     }
 }
