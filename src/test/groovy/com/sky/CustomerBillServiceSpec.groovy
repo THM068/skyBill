@@ -138,6 +138,7 @@ class CustomerBillServiceSpec extends Specification {
 
         when:
             CustomerBillWrapper wrapper = customerBillService.customerBill
+            mockServer.verify()
         then:
             thrown(ConnectException)
 
