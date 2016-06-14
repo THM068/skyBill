@@ -3,7 +3,9 @@ package skybill.com.sky
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.sky.ConnectException
 import com.sky.CustomerBillWrapper
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 class CustomerController {
     def customerBillService
 
